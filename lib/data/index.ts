@@ -1,6 +1,5 @@
-export { getAbout } from "./getAbout"
+export { getAwards } from "./getAwards"
 export { getExperience } from "./getExperience"
-export { getHomeData } from "./getHomeData"
 export { getProjectById } from "./getProjectById"
 export { getProjects } from "./getProjects"
 export { getPublications } from "./getPublications"

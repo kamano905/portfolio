@@ -33,17 +33,19 @@ lib/i18n/
     types.ts
 
 lib/data/
-  getHomeData.ts
-  getAbout.ts
   getExperience.ts
+  getAwards.ts
   getPublications.ts
   getProjects.ts
   getProjectById.ts
+lib/
+  profile.ts
 
 components/sections/
   home-hero.tsx
   about-profile.tsx
   experience.tsx
+  awards.tsx
   publications.tsx
   project-detail.tsx
 
@@ -120,12 +122,13 @@ components/ui/
 
 全データ取得関数は `locale` を受け取る。
 
-- `getHomeData(locale)`
-- `getAbout(locale)`
 - `getExperience(locale)`
+- `getAwards(locale)`
 - `getPublications(locale)`
 - `getProjects(locale)`
 - `getProjectById(id, locale)`
+
+プロフィール情報は `lib/profile.ts` のハードコード値から取得する。
 
 ### ローカライズされたプロパティ取得
 
@@ -143,13 +146,22 @@ components/ui/
   - `role_ja`, `role_en`
   - `description_ja`, `description_en`
   - `content_ja`, `content_en`
-  - 必要に応じて `authors_ja`, `authors_en` など
+  - 必要に応じて `link_ja`, `link_en` など
+- Awards DB の前提プロパティ:
+  - `title`
+  - `description`
+  - `year`
+  - `link`
+- Publications DB の前提プロパティ:
+  - `title`
+  - `description`
+  - `year`
+  - `link`
 - 既存単一列 (`title`, `role`, `description`, `content`) はフォールバックとして利用
 
 ### order の扱い
 
-- `Experience` と `Project` には `order` を追加しない
-- `Publications` のみ `order` を使って昇順ソート
+- `Experience` / `Project` / `Publications` / `Awards` に `order` は使わない
 
 ## ISR / 再検証
 

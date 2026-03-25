@@ -1,7 +1,8 @@
 import { HomeHero } from "@/components/sections/home-hero"
 import { isLocale } from "@/lib/i18n/config"
 import { getDictionary } from "@/lib/i18n/get-dictionary"
-import { getHomeData } from "@/lib/data"
+import { getProjects } from "@/lib/data"
+import { getProfile } from "@/lib/profile"
 import { notFound } from "next/navigation"
 
 interface HomePageProps {
@@ -16,22 +17,23 @@ export default async function HomePage({ params }: HomePageProps) {
     notFound()
   }
 
-  const [dictionary, homeData] = await Promise.all([
+  const [dictionary, projects] = await Promise.all([
     getDictionary(locale),
-    getHomeData(locale),
+    getProjects(locale),
   ])
+  const profile = getProfile(locale)
 
   return (
     <HomeHero
-      about={homeData.about}
-      projects={homeData.projects}
+      profile={profile}
+      projects={projects}
       locale={locale}
       labels={{
         fallbackName: dictionary.home.fallbackName,
         fallbackRole: dictionary.home.fallbackRole,
         noProjects: dictionary.home.noProjects,
         noProjectSelected: dictionary.home.noProjectSelected,
-        socialLinkedIn: dictionary.home.socialLinkedIn,
+        socialTwitter: dictionary.home.socialTwitter,
         socialGithub: dictionary.home.socialGithub,
         seekAboutMe: dictionary.navigation.seekAboutMe,
       }}

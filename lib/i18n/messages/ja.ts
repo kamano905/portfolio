@@ -15,11 +15,12 @@ export const ja = {
     fallbackRole: "Web Engineer",
     noProjects: "プロジェクトはまだ公開されていません。",
     noProjectSelected: "表示できるプロジェクトがありません。",
-    socialLinkedIn: "LinkedIn",
+    socialTwitter: "Twitter(X)",
     socialGithub: "GitHub",
   },
   sections: {
     experience: "経験",
+    awards: "受賞",
     publications: "出版物",
   },
   project: {
@@ -27,6 +28,9 @@ export const ja = {
     noContent: "このプロジェクトの詳細はまだ登録されていません。",
   },
   publication: {
-    view: "出版物を見る",
+    view: "リンクを見る",
+  },
+  award: {
+    view: "リンクを見る",
   },
 } satisfies Dictionary

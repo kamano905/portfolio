@@ -1,29 +1,16 @@
-import type { About } from "@/lib/notion/types"
-
-import { Badge } from "@/components/ui/badge"
+import type { Profile } from "@/lib/profile"
 
 interface AboutProfileProps {
-  about: About | null
+  profile: Profile
 }
 
-export function AboutProfile({ about }: AboutProfileProps) {
-  if (!about) return null
-
+export function AboutProfile({ profile }: AboutProfileProps) {
   return (
     <section className="space-y-4">
-      <h1 className="text-foreground text-3xl font-semibold">{about.title}</h1>
+      <h1 className="text-foreground text-3xl font-semibold">{profile.name}</h1>
       <p className="text-muted-foreground max-w-2xl text-sm leading-relaxed">
-        {about.description}
+        {profile.description}
       </p>
-      {about.tags.length > 0 ? (
-        <div className="flex flex-wrap gap-1.5">
-          {about.tags.map((tag) => (
-            <Badge key={tag} variant="secondary">
-              {tag}
-            </Badge>
-          ))}
-        </div>
-      ) : null}
     </section>
   )
 }

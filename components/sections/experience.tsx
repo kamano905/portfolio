@@ -15,12 +15,9 @@ export function ExperienceSection({
   }
 
   return (
-    <section className="animate-in fade-in slide-in-from-bottom-4 fill-mode-backwards space-y-6 delay-400 duration-500">
-      <h2 className="text-foreground flex items-center gap-3 text-2xl font-bold tracking-tight">
-        <div className="bg-foreground h-6 w-1 rounded-full" />
-        {title}
-      </h2>
-      <div className="space-y-6">
+    <section className="space-y-4">
+      <h2 className="text-foreground text-xl">{title}</h2>
+      <div className="space-y-4">
         {experience.map((exp) => (
           <ExperienceItem key={exp.id} {...exp} />
         ))}

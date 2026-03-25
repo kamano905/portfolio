@@ -15,11 +15,12 @@ export const en = {
     fallbackRole: "Web Engineer",
     noProjects: "No projects are published yet.",
     noProjectSelected: "Projects will appear here.",
-    socialLinkedIn: "LinkedIn",
+    socialTwitter: "Twitter(X)",
     socialGithub: "GitHub",
   },
   sections: {
     experience: "Experience",
+    awards: "Awards",
     publications: "Publications",
   },
   project: {
@@ -27,6 +28,9 @@ export const en = {
     noContent: "No detailed content is available for this project.",
   },
   publication: {
-    view: "View publication",
+    view: "View link",
+  },
+  award: {
+    view: "View link",
   },
 } satisfies Dictionary

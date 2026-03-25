@@ -13,11 +13,12 @@ export interface Dictionary {
     fallbackRole: string
     noProjects: string
     noProjectSelected: string
-    socialLinkedIn: string
+    socialTwitter: string
     socialGithub: string
   }
   sections: {
     experience: string
+    awards: string
     publications: string
   }
   project: {
@@ -25,6 +26,9 @@ export interface Dictionary {
     noContent: string
   }
   publication: {
+    view: string
+  }
+  award: {
     view: string
   }
 }

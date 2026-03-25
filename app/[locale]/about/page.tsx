@@ -1,9 +1,11 @@
 import { AboutProfile } from "@/components/sections/about-profile"
+import { AwardsSection } from "@/components/sections/awards"
 import { ExperienceSection } from "@/components/sections/experience"
 import { PublicationsSection } from "@/components/sections/publications"
 import { isLocale } from "@/lib/i18n/config"
 import { getDictionary } from "@/lib/i18n/get-dictionary"
-import { getAbout, getExperience, getPublications } from "@/lib/data"
+import { getAwards, getExperience, getPublications } from "@/lib/data"
+import { getProfile } from "@/lib/profile"
 import { notFound } from "next/navigation"
 
 interface AboutPageProps {
@@ -18,17 +20,18 @@ export default async function AboutPage({ params }: AboutPageProps) {
     notFound()
   }
 
-  const [dictionary, about, experience, publications] = await Promise.all([
+  const [dictionary, experience, awards, publications] = await Promise.all([
     getDictionary(locale),
-    getAbout(locale),
     getExperience(locale),
+    getAwards(locale),
     getPublications(locale),
   ])
+  const profile = getProfile(locale)
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-20 sm:px-8">
       <div className="space-y-14">
-        <AboutProfile about={about} />
+        <AboutProfile profile={profile} />
         <ExperienceSection
           experience={experience}
           title={dictionary.sections.experience}
@@ -36,7 +39,10 @@ export default async function AboutPage({ params }: AboutPageProps) {
         <PublicationsSection
           publications={publications}
           title={dictionary.sections.publications}
-          viewLabel={dictionary.publication.view}
+        />
+        <AwardsSection
+          awards={awards}
+          title={dictionary.sections.awards}
         />
       </div>
     </div>

@@ -1,15 +1,5 @@
 export type RichText = any[]
 
-export interface About {
-  id: string
-  title: string
-  description: string
-  contact?: string
-  tags: string[]
-  githubUrl?: string
-  linkedinUrl?: string
-}
-
 export interface Experience {
   id: string
   time: string
@@ -22,11 +12,17 @@ export interface Experience {
 export interface Publication {
   id: string
   title: string
-  authors: string
-  venue: string
+  description: string
   year: string
-  publicationUrl: string
-  order: number
+  link: string
+}
+
+export interface Award {
+  id: string
+  title: string
+  description: string
+  year: string
+  link: string
 }
 
 export interface Project {

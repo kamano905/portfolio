@@ -14,25 +14,27 @@ export function ExperienceItem({
         {time}
       </time>
 
-      <h3 className="text-md text-foreground leading-tight font-medium">
-        {title}
-      </h3>
+      <div className="flex items-center gap-1">
+        <h3 className="text-md text-foreground leading-tight font-medium">
+          {title}
+        </h3>
 
-      {experienceName &&
-        (experienceUrl ? (
-          <Link
-            href={experienceUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-muted-foreground hover:text-foreground text-xs font-medium"
-          >
-            {experienceName}
-          </Link>
-        ) : (
-          <p className="text-muted-foreground text-xs font-medium">
-            {experienceName}
-          </p>
-        ))}
+        {experienceName &&
+          (experienceUrl ? (
+            <Link
+              href={experienceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-muted-foreground hover:text-foreground text-xs font-medium"
+            >
+              {experienceName}
+            </Link>
+          ) : (
+            <p className="text-muted-foreground text-sm font-medium">
+              {experienceName}
+            </p>
+          ))}
+      </div>
 
       <p className="text-muted-foreground text-sm leading-relaxed">
         {description}
