@@ -5,7 +5,6 @@ export interface Experience {
   time: string
   title: string
   description: string
-  experienceUrl?: string
   experienceName?: string
 }
 
@@ -27,6 +26,7 @@ export interface Award {
 
 export interface Project {
   id: string
+  time: string
   title: string
   role: string
   description: string

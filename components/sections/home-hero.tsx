@@ -33,15 +33,32 @@ export function HomeHero({ profile, projects, locale, labels }: HomeHeroProps) {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const listRef = useRef<HTMLDivElement>(null)
 
+  // Pick the slide whose vertical center is closest to the list viewport center
+  // (robust vs scroll-snap, subpixels, and multiple visible rows).
   const syncIndexFromScroll = useCallback(() => {
     const root = listRef.current
     if (!root || projects.length === 0) return
-    const first = root.querySelector("li[data-slide]")
-    if (!first) return
-    const step = first.getBoundingClientRect().height
-    if (step <= 0) return
-    const idx = Math.round(root.scrollTop / step)
-    setSelectedIndex(Math.min(Math.max(0, idx), projects.length - 1))
+    const items = root.querySelectorAll("li[data-slide]")
+    if (items.length === 0) return
+
+    const rootRect = root.getBoundingClientRect()
+    const centerY = rootRect.top + rootRect.height / 2
+
+    let bestIdx = 0
+    let bestDist = Infinity
+
+    items.forEach((node, i) => {
+      const r = node.getBoundingClientRect()
+      if (r.height <= 0) return
+      const itemCenterY = r.top + r.height / 2
+      const d = Math.abs(itemCenterY - centerY)
+      if (d < bestDist) {
+        bestDist = d
+        bestIdx = i
+      }
+    })
+
+    setSelectedIndex((prev) => (prev === bestIdx ? prev : bestIdx))
   }, [projects.length])
 
   useEffect(() => {
@@ -49,17 +66,31 @@ export function HomeHero({ profile, projects, locale, labels }: HomeHeroProps) {
     if (!el) return
 
     let raf = 0
+    let rafInit = 0
+
     const onScroll = () => {
       cancelAnimationFrame(raf)
       raf = requestAnimationFrame(syncIndexFromScroll)
     }
 
-    syncIndexFromScroll()
+    const scheduleSync = () => {
+      cancelAnimationFrame(rafInit)
+      rafInit = requestAnimationFrame(() => {
+        syncIndexFromScroll()
+      })
+    }
+
+    const ro = new ResizeObserver(scheduleSync)
+    ro.observe(el)
+
+    scheduleSync()
     el.addEventListener("scroll", onScroll, { passive: true })
     el.addEventListener("scrollend", syncIndexFromScroll)
 
     return () => {
       cancelAnimationFrame(raf)
+      cancelAnimationFrame(rafInit)
+      ro.disconnect()
       el.removeEventListener("scroll", onScroll)
       el.removeEventListener("scrollend", syncIndexFromScroll)
     }
@@ -68,29 +99,6 @@ export function HomeHero({ profile, projects, locale, labels }: HomeHeroProps) {
   const maxProjectIndex = Math.max(0, projects.length - 1)
   const displayIndex =
     projects.length === 0 ? 0 : Math.min(selectedIndex, maxProjectIndex)
-
-  // Boundary loop: wheel past last → first, past first → last (native list has no Embla loop).
-  useEffect(() => {
-    const el = listRef.current
-    if (!el || projects.length < 2) return
-
-    const onWheel = (e: WheelEvent) => {
-      const { scrollTop, scrollHeight, clientHeight } = el
-      const edge = 3
-      const atBottom = scrollTop + clientHeight >= scrollHeight - edge
-      const atTop = scrollTop <= edge
-      if (atBottom && e.deltaY > 0) {
-        e.preventDefault()
-        el.scrollTo({ top: 0, behavior: "smooth" })
-      } else if (atTop && e.deltaY < 0) {
-        e.preventDefault()
-        el.scrollTo({ top: scrollHeight - clientHeight, behavior: "smooth" })
-      }
-    }
-
-    el.addEventListener("wheel", onWheel, { passive: false })
-    return () => el.removeEventListener("wheel", onWheel)
-  }, [projects.length])
 
   const selectedProject = projects[displayIndex]
   const [firstName, lastName] = splitName(profile.name || labels.fallbackName)
@@ -168,7 +176,7 @@ export function HomeHero({ profile, projects, locale, labels }: HomeHeroProps) {
             {projects.length > 0 ? (
               <div
                 ref={listRef}
-                className="h-[60vh] snap-y snap-proximity overflow-y-auto overscroll-y-contain [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                className="h-[60vh] snap-y snap-mandatory overflow-y-auto overscroll-y-contain [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
               >
                 <ul className="flex flex-col">
                   {projects.map((project, index) => (

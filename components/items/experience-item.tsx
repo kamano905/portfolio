@@ -1,12 +1,10 @@
 import { Experience } from "@/lib/notion/types"
-import Link from "next/link"
 
 export function ExperienceItem({
   time,
   title,
   description,
   experienceName,
-  experienceUrl,
 }: Experience) {
   return (
     <div className="space-y-1">
@@ -19,21 +17,11 @@ export function ExperienceItem({
           {title}
         </h3>
 
-        {experienceName &&
-          (experienceUrl ? (
-            <Link
-              href={experienceUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-foreground text-xs font-medium"
-            >
-              {experienceName}
-            </Link>
-          ) : (
-            <p className="text-muted-foreground text-sm font-medium">
-              {experienceName}
-            </p>
-          ))}
+        {experienceName ? (
+          <p className="text-muted-foreground text-sm font-medium">
+            {experienceName}
+          </p>
+        ) : null}
       </div>
 
       <p className="text-muted-foreground text-sm leading-relaxed">

@@ -32,6 +32,7 @@ export async function getProjectById(
 
     return {
       id: page.id,
+      time: getLocalizedPropertyText(properties, "time", locale),
       title: getLocalizedPropertyText(properties, "title", locale),
       role: getLocalizedPropertyText(properties, "role", locale),
       description: getLocalizedPropertyText(properties, "description", locale),

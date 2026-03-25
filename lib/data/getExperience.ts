@@ -20,7 +20,6 @@ export async function getExperience(locale: Locale): Promise<Experience[]> {
           "description",
           locale,
         ),
-        experienceUrl: getPropertyText(properties.experienceUrl),
         experienceName: getLocalizedPropertyText(
           properties,
           "experienceName",

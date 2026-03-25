@@ -39,10 +39,10 @@
 ## データモデルの前提
 
 - Notion のプロパティ名は現行コードに合わせて維持してください。既存フェッチャーは次のフィールドを前提にしています。
-  - Experience: `time`, `title`, `description`, `experienceUrl`, `experienceName`
+  - Experience: `time`, `title`, `description`, `experienceName`
   - Awards: `title`, `description`, `year`, `link`
   - Publications: `title`, `description`, `year`, `link`
-  - Projects: `title`, `role`, `description`, `tags`, `previewLink`
+  - Projects: `time`, `title`, `role`, `description`, `content`, `tags`, `previewLink`
 - プロフィール（名前、自己紹介、連絡先、GitHub、Twitter(X)）は `lib/profile.ts` を編集してください。
 - マッピングの追加や変更では、`lib/utils.ts` の `getPropertyText()` と `getPropertyMultiSelect()` を再利用してください。
 - 現在のフェッチャーは fail-soft です。エラー時は例外を投げず、ログを出して空データを返します。

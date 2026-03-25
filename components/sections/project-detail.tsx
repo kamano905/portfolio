@@ -20,6 +20,9 @@ export function ProjectDetail({ project, labels }: ProjectDetailProps) {
         <h1 className="text-foreground text-3xl font-semibold">
           {project.title}
         </h1>
+        {project.time ? (
+          <p className="text-muted-foreground text-xs">{project.time}</p>
+        ) : null}
         {project.role ? (
           <p className="text-muted-foreground text-sm">{project.role}</p>
         ) : null}

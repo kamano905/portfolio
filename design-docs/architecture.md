@@ -142,6 +142,7 @@ components/ui/
 多言語は同一 DB の列追加で管理する。
 
 - 推奨列:
+  - `time_ja`, `time_en`
   - `title_ja`, `title_en`
   - `role_ja`, `role_en`
   - `description_ja`, `description_en`
@@ -157,7 +158,7 @@ components/ui/
   - `description`
   - `year`
   - `link`
-- 既存単一列 (`title`, `role`, `description`, `content`) はフォールバックとして利用
+- 既存単一列 (`time`, `title`, `role`, `description`, `content`) はフォールバックとして利用
 
 ### order の扱い
 

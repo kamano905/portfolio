@@ -6,6 +6,7 @@ import { isLocale } from "@/lib/i18n/config"
 import { getDictionary } from "@/lib/i18n/get-dictionary"
 import { getAwards, getExperience, getPublications } from "@/lib/data"
 import { getProfile } from "@/lib/profile"
+import Link from "next/link"
 import { notFound } from "next/navigation"
 
 interface AboutPageProps {
@@ -29,21 +30,26 @@ export default async function AboutPage({ params }: AboutPageProps) {
   const profile = getProfile(locale)
 
   return (
-    <div className="mx-auto max-w-3xl px-6 py-20 sm:px-8">
-      <div className="space-y-14">
-        <AboutProfile profile={profile} />
-        <ExperienceSection
-          experience={experience}
-          title={dictionary.sections.experience}
-        />
-        <PublicationsSection
-          publications={publications}
-          title={dictionary.sections.publications}
-        />
-        <AwardsSection
-          awards={awards}
-          title={dictionary.sections.awards}
-        />
+    <div className="relative min-h-screen">
+      <Link
+        href={`/${locale}/home`}
+        className="fixed top-6 left-6 z-20 text-sm text-black/80 underline-offset-4 hover:underline"
+      >
+        {"<< Back"}
+      </Link>
+      <div className="mx-auto max-w-3xl px-6 py-20 sm:px-8">
+        <div className="space-y-14">
+          <AboutProfile profile={profile} />
+          <ExperienceSection
+            experience={experience}
+            title={dictionary.sections.experience}
+          />
+          <PublicationsSection
+            publications={publications}
+            title={dictionary.sections.publications}
+          />
+          <AwardsSection awards={awards} title={dictionary.sections.awards} />
+        </div>
       </div>
     </div>
   )
