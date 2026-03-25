@@ -1,18 +1,5 @@
-import { NotionBadge } from "@/components/ui/notion-badge"
-import { ThemeProvider } from "@/components/ui/theme-provider"
-import { ThemeToggle } from "@/components/ui/theme-toggle"
 import type { Metadata } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
 import "./globals.css"
-
-const geist = Geist({
-  variable: "--font-sans",
-  subsets: ["latin"],
-})
-const geistMono = Geist_Mono({
-  variable: "--font-mono",
-  subsets: ["latin"],
-})
 
 export const metadata: Metadata = {
   title: "Next.js + Notion Portfolio Template",
@@ -52,7 +39,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={geist.variable} suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
         <script
           async
@@ -60,23 +47,8 @@ export default function RootLayout({
           src="https://tweakcn.com/live-preview.min.js"
         />
       </head>
-      <body className={`${geistMono.variable} antialiased`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {/* Delete this badge in production */}
-          <div className="fixed top-4 left-4 z-20">
-            <NotionBadge />
-          </div>
-
-          <div className="fixed top-4 right-4 z-20">
-            <ThemeToggle />
-          </div>
-          <main className="bg-background min-h-screen">{children}</main>
-        </ThemeProvider>
+      <body className="font-sans antialiased">
+        <main className="bg-background min-h-screen">{children}</main>
       </body>
     </html>
   )

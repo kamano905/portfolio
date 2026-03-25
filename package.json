@@ -4,12 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",
     "write": "prettier --write ."
   },
   "dependencies": {
+    "@fontsource/oxygen-mono": "^5.2.8",
     "@notionhq/client": "^5.6.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
