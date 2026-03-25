@@ -1,8 +1,9 @@
+import type { Locale } from "@/lib/i18n/config"
 import { notion } from "@/lib/notion/client"
 import type { Experience } from "@/lib/notion/types"
-import { getPropertyText } from "@/lib/utils"
+import { getLocalizedPropertyText, getPropertyText } from "@/lib/utils"
 
-export async function getExperience(): Promise<Experience[]> {
+export async function getExperience(locale: Locale): Promise<Experience[]> {
   try {
     const response = await notion.dataSources.query({
       data_source_id: process.env.NOTION_EXPERIENCE_DB_ID ?? "",
@@ -13,10 +14,18 @@ export async function getExperience(): Promise<Experience[]> {
       return {
         id: page.id,
         time: getPropertyText(properties.time),
-        title: getPropertyText(properties.title),
-        description: getPropertyText(properties.description),
+        title: getLocalizedPropertyText(properties, "title", locale),
+        description: getLocalizedPropertyText(
+          properties,
+          "description",
+          locale,
+        ),
         experienceUrl: getPropertyText(properties.experienceUrl),
-        experienceName: getPropertyText(properties.experienceName),
+        experienceName: getLocalizedPropertyText(
+          properties,
+          "experienceName",
+          locale,
+        ),
       }
     })
   } catch (error) {

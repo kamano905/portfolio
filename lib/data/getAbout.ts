@@ -1,8 +1,13 @@
+import type { Locale } from "@/lib/i18n/config"
 import { notion } from "@/lib/notion/client"
 import type { About } from "@/lib/notion/types"
-import { getPropertyMultiSelect, getPropertyText } from "@/lib/utils"
+import {
+  getLocalizedPropertyText,
+  getPropertyMultiSelect,
+  getPropertyText,
+} from "@/lib/utils"
 
-export async function getAbout(): Promise<About | null> {
+export async function getAbout(locale: Locale): Promise<About | null> {
   try {
     const response = await notion.dataSources.query({
       data_source_id: process.env.NOTION_ABOUT_DB_ID ?? "",
@@ -16,8 +21,8 @@ export async function getAbout(): Promise<About | null> {
 
     return {
       id: page.id,
-      title: getPropertyText(properties.title),
-      description: getPropertyText(properties.description),
+      title: getLocalizedPropertyText(properties, "title", locale),
+      description: getLocalizedPropertyText(properties, "description", locale),
       contact: getPropertyText(properties.contact),
       tags: getPropertyMultiSelect(properties.tags),
       githubUrl: getPropertyText(properties.githubUrl),

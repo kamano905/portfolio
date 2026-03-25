@@ -1,22 +1,33 @@
+import type { Locale } from "@/lib/i18n/config"
 import { notion } from "@/lib/notion/client"
-import { getPropertyMultiSelect, getPropertyText } from "@/lib/utils"
+import {
+  getLocalizedPropertyText,
+  getPropertyMultiSelect,
+  getPropertyText,
+} from "@/lib/utils"
 
 import type { Project } from "@/lib/notion/types"
 
-export async function getProjects(): Promise<Project[]> {
+export async function getProjects(locale: Locale): Promise<Project[]> {
   try {
     const response = await notion.dataSources.query({
       data_source_id: process.env.NOTION_PROJECTS_DB_ID ?? "",
     })
 
-    return response.results.map((page: any) => {
+    return response.results.map((page: any): Project => {
       const { properties } = page
+
       return {
         id: page.id,
-        title: getPropertyText(properties.title),
-        description: getPropertyText(properties.description),
+        title: getLocalizedPropertyText(properties, "title", locale),
+        role: getLocalizedPropertyText(properties, "role", locale),
+        description: getLocalizedPropertyText(
+          properties,
+          "description",
+          locale,
+        ),
+        content: getLocalizedPropertyText(properties, "content", locale),
         tags: getPropertyMultiSelect(properties.tags),
-        githubLink: getPropertyText(properties.githubLink),
         previewLink: getPropertyText(properties.previewLink),
       }
     })

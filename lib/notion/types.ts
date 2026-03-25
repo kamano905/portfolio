@@ -19,11 +19,22 @@ export interface Experience {
   experienceName?: string
 }
 
+export interface Publication {
+  id: string
+  title: string
+  authors: string
+  venue: string
+  year: string
+  publicationUrl: string
+  order: number
+}
+
 export interface Project {
   id: string
   title: string
+  role: string
   description: string
+  content: string
   tags: string[]
-  githubLink?: string
   previewLink?: string
 }

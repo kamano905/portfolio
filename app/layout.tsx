@@ -1,45 +1,30 @@
+import { defaultLocale, isLocale } from "@/lib/i18n/config"
+import { headers } from "next/headers"
 import type { Metadata } from "next"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "Next.js + Notion Portfolio Template",
-  description:
-    "Modern portfolio template built with Next.js and Notion API. Perfect for developers and creatives.",
-  keywords: [
-    "Next.js",
-    "Notion",
-    "Portfolio",
-    "Template",
-    "React",
-    "TypeScript",
-  ],
-  authors: [{ name: "Felipe Giraldo" }],
+  title: "Portfolio",
+  description: "Portfolio website powered by Next.js and Notion.",
+  keywords: ["Next.js", "Notion", "Portfolio"],
+  authors: [{ name: "Katsutoshi Amano" }],
   icons: {
     icon: "/favicon.ico",
   },
-  metadataBase: new URL("https://portfolio-nextjs-notion.vercel.app/"),
-  openGraph: {
-    title: "Next.js + Notion Portfolio Template",
-    description:
-      "Modern portfolio template built with Next.js and Notion API. Perfect for developers and creatives.",
-    url: "https://portfolio-nextjs-notion.vercel.app/",
-    type: "website",
-  },
-  twitter: {
-    card: "summary",
-    title: "Next.js + Notion Portfolio Template",
-    description:
-      "Modern portfolio template built with Next.js and Notion API. Perfect for developers and creatives.",
-  },
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const headerList = await headers()
+  const headerLocale = headerList.get("x-locale")
+  const htmlLang =
+    headerLocale && isLocale(headerLocale) ? headerLocale : defaultLocale
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={htmlLang} suppressHydrationWarning>
       <head>
         <script
           async

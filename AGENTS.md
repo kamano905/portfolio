@@ -35,7 +35,7 @@
 - Notion のプロパティ名は現行コードに合わせて維持してください。既存フェッチャーは次のフィールドを前提にしています。
   - About: `title`, `description`, `contact`, `tags`, `githubUrl`, `linkedinUrl`
   - Experience: `time`, `title`, `description`, `experienceUrl`, `experienceName`
-  - Projects: `title`, `description`, `tags`, `githubLink`, `previewLink`
+  - Projects: `title`, `role`, `description`, `tags`, `previewLink`
 - マッピングの追加や変更では、`lib/utils.ts` の `getPropertyText()` と `getPropertyMultiSelect()` を再利用してください。
 - 現在のフェッチャーは fail-soft です。エラー時は例外を投げず、ログを出して空データを返します。
 
