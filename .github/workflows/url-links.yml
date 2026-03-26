@@ -1,7 +1,6 @@
-name: URL Links Check
+name: Lint and URL Links Check
 
 on:
-  pull_request:
   push:
   schedule:
     - cron: "0 3 * * 1"

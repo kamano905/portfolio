@@ -33,7 +33,7 @@ export default async function RootLayout({
         />
       </head>
       <body className="font-sans antialiased">
-        <main className="bg-background min-h-screen">{children}</main>
+        <main className="min-h-screen">{children}</main>
       </body>
     </html>
   )
