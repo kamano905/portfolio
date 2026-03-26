@@ -2,7 +2,8 @@ import type { Project } from "@/lib/notion/types"
 
 interface HomeHeroProjectRailProps {
   projects: Project[]
-  displayIndex: number
+  visualProjectIndices: number[]
+  visualDisplayIndex: number
   edgePadding: number
   noProjectsLabel: string
   onScroll: () => void
@@ -15,7 +16,8 @@ interface HomeHeroProjectRailProps {
 
 export function HomeHeroProjectRail({
   projects,
-  displayIndex,
+  visualProjectIndices,
+  visualDisplayIndex,
   edgePadding,
   noProjectsLabel,
   onScroll,
@@ -36,23 +38,32 @@ export function HomeHeroProjectRail({
               className="w-2/3 shrink-0"
               style={{ height: `${edgePadding}px` }}
             />
-            {projects.map((project, index) => (
-              <li
-                key={project.id}
-                ref={(node) => {
-                  setProjectItemRef({ index, node })
-                }}
-                className="box-border flex h-[140px] w-2/3 min-w-0 flex-col justify-center border-t border-black/45 py-3 pr-4 pl-0"
-              >
-                <p
-                  className={`line-clamp-3 text-xl leading-snug ${
-                    displayIndex === index ? "text-black" : "text-black/30"
-                  }`}
+            {visualProjectIndices.map((projectIndex, visualIndex) => {
+              const project = projects[projectIndex]
+              if (!project) {
+                return null
+              }
+
+              return (
+                <li
+                  key={`${visualIndex}-${project.id}`}
+                  ref={(node) => {
+                    setProjectItemRef({ index: visualIndex, node })
+                  }}
+                  className="box-border flex h-[140px] w-2/3 min-w-0 flex-col justify-center border-t border-black/45 py-3 pr-4 pl-0"
                 >
-                  {project.title}
-                </p>
-              </li>
-            ))}
+                  <p
+                    className={`line-clamp-3 text-xl leading-snug ${
+                      visualDisplayIndex === visualIndex
+                        ? "text-black"
+                        : "text-black/30"
+                    }`}
+                  >
+                    {project.title}
+                  </p>
+                </li>
+              )
+            })}
             <li
               aria-hidden
               className="w-2/3 shrink-0"

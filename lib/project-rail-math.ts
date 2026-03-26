@@ -5,6 +5,11 @@ export function clampNumber(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max)
 }
 
+export function wrapIndex(value: number, size: number): number {
+  if (size <= 0) return 0
+  return ((value % size) + size) % size
+}
+
 export function getProjectRailEdgePadding(
   viewportHeight: number,
   itemHeight = PROJECT_RAIL_ITEM_HEIGHT,

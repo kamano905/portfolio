@@ -36,6 +36,8 @@ function splitName(name: string): [string, string] {
 export function HomeHero({ profile, projects, locale, labels }: HomeHeroProps) {
   const {
     displayIndex,
+    visualDisplayIndex,
+    visualProjectIndices,
     edgePadding,
     handleScroll,
     setProjectItemRef,
@@ -72,7 +74,8 @@ export function HomeHero({ profile, projects, locale, labels }: HomeHeroProps) {
         <div className="flex flex-col justify-between lg:min-h-[calc(100vh-6rem)]">
           <HomeHeroProjectRail
             projects={projects}
-            displayIndex={displayIndex}
+            visualProjectIndices={visualProjectIndices}
+            visualDisplayIndex={visualDisplayIndex}
             edgePadding={edgePadding}
             noProjectsLabel={labels.noProjects}
             onScroll={handleScroll}
