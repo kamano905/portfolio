@@ -19,12 +19,12 @@ export const ja = {
     socialGithub: "GitHub",
   },
   sections: {
-    experience: "経験",
-    awards: "受賞",
-    publications: "出版物",
+    experience: "Experience",
+    awards: "Awards",
+    publications: "Publications",
   },
   project: {
-    preview: "プレビュー",
+    preview: "関連リンク",
     noContent: "このプロジェクトの詳細はまだ登録されていません。",
   },
   publication: {

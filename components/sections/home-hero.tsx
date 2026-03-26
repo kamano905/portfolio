@@ -3,9 +3,10 @@
 import type { Locale } from "@/lib/i18n/config"
 import type { Project } from "@/lib/notion/types"
 import type { Profile } from "@/lib/profile"
-import { ChevronDownIcon, ChevronUpIcon } from "lucide-react"
+import { ChevronDownIcon, ChevronUpIcon, Github, Twitter } from "lucide-react"
 import Link from "next/link"
 import { useEffect, useState } from "react"
+import { Button } from "../ui/button"
 
 interface HomeHeroProps {
   profile: Profile
@@ -74,13 +75,39 @@ export function HomeHero({ profile, projects, locale, labels }: HomeHeroProps) {
             ) : null}
           </header>
 
-          <div className="space-y-3 text-base text-black/85">
+          <div className="flex gap-2 text-base text-black/85 items-center">
             {profile.twitterUrl ? (
-              <Link href={profile.twitterUrl} target="_blank" rel="noreferrer">
-                {labels.socialTwitter}
-              </Link>
+              <Button
+                variant="outline"
+                size="icon"
+                asChild
+              >
+                <Link href={profile.twitterUrl} target="_blank" rel="noreferrer">
+                  <Twitter className="h-4 w-4" />
+                </Link>
+              </Button>
             ) : null}
-            {profile.contact ? <p>{profile.contact}</p> : null}
+            {profile.githubUrl ? (
+              <Button
+                variant="outline"
+                size="icon"
+                asChild
+              >
+                <Link href={profile.githubUrl} target="_blank" rel="noreferrer">
+                  <Github className="h-4 w-4" />
+                </Link>
+              </Button>
+            ) : null}
+            {profile.contact ? (
+              <Button size="sm" asChild className="h-8">
+                <Link
+                  href={`mailto:${profile.contact}`}
+                  aria-label="Send email"
+                >
+                  Contact
+                </Link>
+              </Button>
+            ) : null}
           </div>
         </div>
 

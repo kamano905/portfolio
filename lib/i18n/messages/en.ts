@@ -24,7 +24,7 @@ export const en = {
     publications: "Publications",
   },
   project: {
-    preview: "Preview",
+    preview: "Related link",
     noContent: "No detailed content is available for this project.",
   },
   publication: {

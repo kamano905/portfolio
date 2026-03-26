@@ -26,9 +26,6 @@ export function ProjectDetail({ project, labels }: ProjectDetailProps) {
         {project.role ? (
           <p className="text-muted-foreground text-sm">{project.role}</p>
         ) : null}
-        <p className="text-muted-foreground text-sm leading-relaxed">
-          {project.description}
-        </p>
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
