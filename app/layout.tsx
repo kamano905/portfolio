@@ -2,6 +2,7 @@ import { defaultLocale, isLocale } from "@/lib/i18n/config"
 import { headers } from "next/headers"
 import type { Metadata } from "next"
 import "./globals.css"
+import NoiseBackground from "./background"
 
 export const metadata: Metadata = {
   title: "Portfolio",
@@ -33,6 +34,7 @@ export default async function RootLayout({
         />
       </head>
       <body className="font-sans antialiased">
+        <NoiseBackground />
         <main className="min-h-screen">{children}</main>
       </body>
     </html>

@@ -16,7 +16,7 @@ export function HomeHeroSelectedProjectCard({
   noProjectSelectedLabel,
 }: HomeHeroSelectedProjectCardProps) {
   return (
-    <div className="relative flex min-h-[340px] items-center justify-center lg:min-h-[calc(100vh-6rem)]">
+    <div className="relative flex min-h-[340px] items-start justify-center lg:min-h-[calc(100vh-6rem)] pt-36">
       {selectedProject ? (
         <Link
           href={`/${locale}/projects/${selectedProject.id}`}

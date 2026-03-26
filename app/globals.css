@@ -198,11 +198,5 @@
   body {
     font-family: var(--font-sans);
     letter-spacing: var(--tracking-normal);
-    background-image: url("/background.png");
-    background-size: cover;
-    background-attachment: fixed;
-    background-position: center;
-    background-repeat: no-repeat;
-    min-height: 100vh;
   }
 }
