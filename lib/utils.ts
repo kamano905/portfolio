@@ -45,6 +45,29 @@ export function getPropertyNumber(prop: any): number {
   return 0
 }
 
+/** First 4-digit year in string, or 0 if none (for sorting). */
+export function parseYearForSort(year: string): number {
+  const m = year.match(/\d{4}/)
+  if (m) return parseInt(m[0], 10)
+  return 0
+}
+
+/** Sort by first 4-digit year found in a string field (e.g. `year`, `time`). */
+export function sortByYearishDescending<T>(
+  items: T[],
+  getYearish: (item: T) => string,
+): T[] {
+  return [...items].sort(
+    (a, b) => parseYearForSort(getYearish(b)) - parseYearForSort(getYearish(a)),
+  )
+}
+
+export function sortByYearDescending<T extends { year: string }>(
+  items: T[],
+): T[] {
+  return sortByYearishDescending(items, (x) => x.year)
+}
+
 export function getLocalizedPropertyText(
   properties: Record<string, any>,
   key: string,

@@ -5,6 +5,7 @@ import {
   getLocalizedPropertyText,
   getPropertyNumber,
   getPropertyText,
+  sortByYearDescending,
 } from "@/lib/utils"
 
 export async function getAwards(locale: Locale): Promise<Award[]> {
@@ -13,7 +14,7 @@ export async function getAwards(locale: Locale): Promise<Award[]> {
       data_source_id: process.env.NOTION_AWARDS_DB_ID ?? "",
     })
 
-    return response.results.map((page: any) => {
+    const items = response.results.map((page: any) => {
       const { properties } = page
       const yearText = getPropertyText(properties.year)
       const yearNumber = getPropertyNumber(properties.year)
@@ -30,6 +31,8 @@ export async function getAwards(locale: Locale): Promise<Award[]> {
         link: getPropertyText(properties.link),
       }
     })
+
+    return sortByYearDescending(items)
   } catch (error) {
     console.error("Error fetching awards:", error)
     return []

@@ -3,8 +3,9 @@ import { notion } from "@/lib/notion/client"
 import type { Publication } from "@/lib/notion/types"
 import {
   getLocalizedPropertyText,
-  getPropertyText,
   getPropertyNumber,
+  getPropertyText,
+  sortByYearDescending,
 } from "@/lib/utils"
 
 export async function getPublications(locale: Locale): Promise<Publication[]> {
@@ -13,7 +14,7 @@ export async function getPublications(locale: Locale): Promise<Publication[]> {
       data_source_id: process.env.NOTION_PUBLICATIONS_DB_ID ?? "",
     })
 
-    return response.results.map((page: any) => {
+    const items = response.results.map((page: any) => {
       const { properties } = page
       const yearText = getPropertyText(properties.year)
       const yearNumber = getPropertyNumber(properties.year)
@@ -30,6 +31,8 @@ export async function getPublications(locale: Locale): Promise<Publication[]> {
         link: getPropertyText(properties.link),
       } satisfies Publication
     })
+
+    return sortByYearDescending(items)
   } catch (error) {
     console.error("Error fetching publications:", error)
     return []

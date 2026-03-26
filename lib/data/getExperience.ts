@@ -1,7 +1,11 @@
 import type { Locale } from "@/lib/i18n/config"
 import { notion } from "@/lib/notion/client"
 import type { Experience } from "@/lib/notion/types"
-import { getLocalizedPropertyText, getPropertyText } from "@/lib/utils"
+import {
+  getLocalizedPropertyText,
+  getPropertyText,
+  sortByYearishDescending,
+} from "@/lib/utils"
 
 export async function getExperience(locale: Locale): Promise<Experience[]> {
   try {
@@ -9,7 +13,7 @@ export async function getExperience(locale: Locale): Promise<Experience[]> {
       data_source_id: process.env.NOTION_EXPERIENCE_DB_ID ?? "",
     })
 
-    return response.results.map((page: any) => {
+    const items = response.results.map((page: any) => {
       const { properties } = page
       return {
         id: page.id,
@@ -27,6 +31,8 @@ export async function getExperience(locale: Locale): Promise<Experience[]> {
         ),
       }
     })
+
+    return sortByYearishDescending(items, (x) => x.time)
   } catch (error) {
     console.error("Error fetching experience:", error)
     return []
