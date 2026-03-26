@@ -1,23 +1,34 @@
+import type { Locale } from "@/lib/i18n/config"
 import { Project } from "@/lib/notion/types"
-import { ExternalLink, Github } from "lucide-react"
+import { ExternalLink } from "lucide-react"
 import Link from "next/link"
 import { Badge } from "../ui/badge"
 import { Button } from "../ui/button"
 
+interface ProjectItemProps extends Project {
+  locale?: Locale
+}
+
 export function ProjectItem({
+  id,
   title,
   description,
   tags,
-  githubLink,
   previewLink,
-}: Project) {
+  locale,
+}: ProjectItemProps) {
+  const detailHref = locale ? `/${locale}/projects/${id}` : `/projects/${id}`
+
   return (
     <div className="flex items-start justify-between gap-4">
       <div className="min-w-0 flex-1">
         <div className="mb-1 flex items-center gap-2">
-          <h3 className="text-md text-foreground truncate leading-tight font-medium">
+          <Link
+            href={detailHref}
+            className="text-md text-foreground truncate leading-tight font-medium hover:underline"
+          >
             {title}
-          </h3>
+          </Link>
           <div className="flex shrink-0 gap-1">
             {previewLink && (
               <Button
@@ -33,23 +44,6 @@ export function ProjectItem({
                   title="Preview"
                 >
                   <ExternalLink className="h-3 w-3" />
-                </Link>
-              </Button>
-            )}
-            {githubLink && (
-              <Button
-                asChild
-                size="xs"
-                variant="secondary"
-                className="hover:bg-muted h-6 w-6 p-0"
-              >
-                <Link
-                  href={githubLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title="View Code"
-                >
-                  <Github className="h-3 w-3" />
                 </Link>
               </Button>
             )}

@@ -1,5 +1,5 @@
-// Barrel export - re-export all data functions
-export { getAbout as getAbout } from "./getAbout"
-export { getData } from "./getData"
+export { getAwards } from "./getAwards"
 export { getExperience } from "./getExperience"
+export { getProjectById } from "./getProjectById"
 export { getProjects } from "./getProjects"
+export { getPublications } from "./getPublications"
