@@ -3,8 +3,9 @@
 import type { Locale } from "@/lib/i18n/config"
 import type { Project } from "@/lib/notion/types"
 import type { Profile } from "@/lib/profile"
+import { ChevronDownIcon, ChevronUpIcon } from "lucide-react"
 import Link from "next/link"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 
 interface HomeHeroProps {
   profile: Profile
@@ -31,70 +32,22 @@ function splitName(name: string): [string, string] {
 
 export function HomeHero({ profile, projects, locale, labels }: HomeHeroProps) {
   const [selectedIndex, setSelectedIndex] = useState(0)
-  const listRef = useRef<HTMLDivElement>(null)
-
-  // Pick the slide whose vertical center is closest to the list viewport center
-  // (robust vs scroll-snap, subpixels, and multiple visible rows).
-  const syncIndexFromScroll = useCallback(() => {
-    const root = listRef.current
-    if (!root || projects.length === 0) return
-    const items = root.querySelectorAll("li[data-slide]")
-    if (items.length === 0) return
-
-    const rootRect = root.getBoundingClientRect()
-    const centerY = rootRect.top + rootRect.height / 2
-
-    let bestIdx = 0
-    let bestDist = Infinity
-
-    items.forEach((node, i) => {
-      const r = node.getBoundingClientRect()
-      if (r.height <= 0) return
-      const itemCenterY = r.top + r.height / 2
-      const d = Math.abs(itemCenterY - centerY)
-      if (d < bestDist) {
-        bestDist = d
-        bestIdx = i
-      }
-    })
-
-    setSelectedIndex((prev) => (prev === bestIdx ? prev : bestIdx))
-  }, [projects.length])
 
   useEffect(() => {
-    const el = listRef.current
-    if (!el) return
+    setSelectedIndex((i) =>
+      projects.length === 0 ? 0 : Math.min(i, projects.length - 1),
+    )
+  }, [projects.length])
 
-    let raf = 0
-    let rafInit = 0
+  const prev = () => {
+    if (projects.length === 0) return
+    setSelectedIndex((i) => (i - 1 + projects.length) % projects.length)
+  }
 
-    const onScroll = () => {
-      cancelAnimationFrame(raf)
-      raf = requestAnimationFrame(syncIndexFromScroll)
-    }
-
-    const scheduleSync = () => {
-      cancelAnimationFrame(rafInit)
-      rafInit = requestAnimationFrame(() => {
-        syncIndexFromScroll()
-      })
-    }
-
-    const ro = new ResizeObserver(scheduleSync)
-    ro.observe(el)
-
-    scheduleSync()
-    el.addEventListener("scroll", onScroll, { passive: true })
-    el.addEventListener("scrollend", syncIndexFromScroll)
-
-    return () => {
-      cancelAnimationFrame(raf)
-      cancelAnimationFrame(rafInit)
-      ro.disconnect()
-      el.removeEventListener("scroll", onScroll)
-      el.removeEventListener("scrollend", syncIndexFromScroll)
-    }
-  }, [syncIndexFromScroll, projects.length])
+  const next = () => {
+    if (projects.length === 0) return
+    setSelectedIndex((i) => (i + 1) % projects.length)
+  }
 
   const maxProjectIndex = Math.max(0, projects.length - 1)
   const displayIndex =
@@ -104,17 +57,10 @@ export function HomeHero({ profile, projects, locale, labels }: HomeHeroProps) {
   const [firstName, lastName] = splitName(profile.name || labels.fallbackName)
   const role = selectedProject?.role || labels.fallbackRole
 
-  return (
-    <section className="relative min-h-screen overflow-hidden bg-[#efefeb]">
-      <div
-        className="pointer-events-none absolute inset-0 opacity-35"
-        style={{
-          backgroundImage:
-            "radial-gradient(circle at 1px 1px, rgba(0, 0, 0, 0.11) 0.55px, transparent 0)",
-          backgroundSize: "3px 3px",
-        }}
-      />
+  const canStep = projects.length > 0
 
+  return (
+    <section className="min-h-screen overflow-hidden bg-[#efefeb]">
       <div className="relative mx-auto grid min-h-screen max-w-[1800px] gap-14 px-6 py-10 sm:px-10 sm:py-14 lg:grid-cols-[220px_minmax(0,1fr)_280px] lg:gap-10 lg:px-14 lg:py-12">
         <div className="flex flex-col justify-between lg:min-h-[calc(100vh-6rem)]">
           <header className="text-black">
@@ -172,23 +118,29 @@ export function HomeHero({ profile, projects, locale, labels }: HomeHeroProps) {
         </div>
 
         <div className="flex flex-col justify-between lg:min-h-[calc(100vh-6rem)]">
-          <nav>
+          <nav className="flex w-full flex-col gap-0">
             {projects.length > 0 ? (
-              <div
-                ref={listRef}
-                className="h-[60vh] snap-y snap-mandatory overflow-y-auto overscroll-y-contain [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-              >
-                <ul className="flex flex-col">
-                  {projects.map((project, index) => (
-                    <li
-                      key={project.id}
-                      data-slide
-                      data-project-index={index}
-                      className="box-border flex h-[calc(60vh/3)] shrink-0 snap-start flex-col justify-start pt-2 pb-3"
-                    >
-                      <div className="flex min-h-0 flex-1 flex-col border-t border-black/45 pt-3">
+              <>
+                <div className="flex w-2/3 justify-center">
+                  <button
+                    type="button"
+                    className="py-2 text-left text-sm text-black"
+                    onClick={prev}
+                    disabled={!canStep}
+                    aria-label="Previous project"
+                  >
+                    <ChevronUpIcon className="h-4 w-4" />
+                  </button>
+                </div>
+                <div className="w-full shrink-0 overflow-y-auto overscroll-y-contain">
+                  <ul className="flex flex-col">
+                    {projects.map((project, index) => (
+                      <li
+                        key={project.id}
+                        className="box-border flex w-2/3 min-w-0 flex-col justify-center border-t border-black/45 py-3 pr-4 pl-0 h-[140px]"
+                      >
                         <p
-                          className={`line-clamp-3 text-xl leading-snug tracking-[0.02em] transition-colors duration-300 ${
+                          className={`line-clamp-3 text-xl leading-snug ${
                             displayIndex === index
                               ? "text-black"
                               : "text-black/30"
@@ -196,11 +148,22 @@ export function HomeHero({ profile, projects, locale, labels }: HomeHeroProps) {
                         >
                           {project.title}
                         </p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="flex w-2/3 justify-center">
+                  <button
+                    type="button"
+                    className="py-2 text-left text-sm text-black"
+                    onClick={next}
+                    disabled={!canStep}
+                    aria-label="Next project"
+                  >
+                    <ChevronDownIcon className="h-4 w-4" />
+                  </button>
+                </div>
+              </>
             ) : (
               <p className="text-[clamp(1.2rem,2vw,2rem)] text-black/70">
                 {labels.noProjects}
