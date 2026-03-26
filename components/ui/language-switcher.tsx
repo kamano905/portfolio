@@ -34,7 +34,7 @@ export function LanguageSwitcher({ locale, labels }: LanguageSwitcherProps) {
   const query = searchParams.toString()
 
   return (
-    <div className="fixed top-4 right-4 z-30 flex items-center gap-1 rounded-full border border-black/20 bg-white/80 p-1 text-xs backdrop-blur">
+    <div className="fixed top-14 right-12 z-30 flex items-center gap-3 text-xs">
       {locales.map((targetLocale) => {
         const basePath = buildLocalizedPathname(pathname, targetLocale)
         const href = query ? `${basePath}?${query}` : basePath
@@ -46,13 +46,20 @@ export function LanguageSwitcher({ locale, labels }: LanguageSwitcherProps) {
           <Link
             key={targetLocale}
             href={href}
-            className={`rounded-full px-2.5 py-1 ${
-              active
-                ? "bg-black text-white"
-                : "text-black/70 transition-colors hover:bg-black/10 hover:text-black"
+            aria-current={active ? "page" : undefined}
+            className={`group relative inline-flex min-w-11 items-center justify-center px-3 py-1.5 tracking-[0.03em] transition-opacity ${
+              active ? "text-black" : "text-black/55 hover:text-black"
             }`}
           >
-            {label}
+            {active ? (
+              <>
+                <span className="pointer-events-none absolute top-0 left-0 h-2.5 w-2.5 border-t border-l border-black/55" />
+                <span className="pointer-events-none absolute top-0 right-0 h-2.5 w-2.5 border-t border-r border-black/55" />
+                <span className="pointer-events-none absolute bottom-0 left-0 h-2.5 w-2.5 border-b border-l border-black/55" />
+                <span className="pointer-events-none absolute right-0 bottom-0 h-2.5 w-2.5 border-r border-b border-black/55" />
+              </>
+            ) : null}
+            <span>{label}</span>
           </Link>
         )
       })}
