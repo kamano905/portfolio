@@ -16,12 +16,12 @@ export function HomeHeroSelectedProjectCard({
   noProjectSelectedLabel,
 }: HomeHeroSelectedProjectCardProps) {
   return (
-    <div className="relative flex min-h-[340px] items-start justify-start lg:min-h-[calc(100vh-6rem)] pt-36">
+    <div className="relative flex min-h-[340px] items-start justify-start pt-36 lg:min-h-[calc(100vh-6rem)]">
       {selectedProject ? (
         <Link
           href={`/${locale}/projects/${selectedProject.id}`}
           aria-label={`${selectedProject.title} details`}
-          className="group relative block text-black px-6 py-8"
+          className="group relative block px-6 py-8 text-black"
         >
           <span className="absolute top-0 left-0 h-5 w-5 border-t border-l border-black/45" />
           <span className="absolute top-0 right-0 h-5 w-5 border-t border-r border-black/45" />
@@ -34,7 +34,7 @@ export function HomeHeroSelectedProjectCard({
           <div className="relative hidden py-4 lg:block">
             <div
               aria-hidden
-              className="pointer-events-none absolute top-1/2 left-1/2 w-screen -translate-x-1/2 -translate-y-1/2 border-t border-black/35"
+              className="pointer-events-none absolute top-1/2 left-1/2 w-[200vw] -translate-x-1/2 -translate-y-1/2 border-t border-black/35"
             />
           </div>
           <p className="mt-4 text-2xl leading-none lg:mt-0">{role}</p>
