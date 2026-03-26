@@ -28,7 +28,7 @@ export function HomeHeroProjectRail({
         <div
           ref={viewportRef}
           onScroll={onScroll}
-          className="h-[340px] w-full shrink-0 overflow-y-auto overscroll-y-contain sm:h-[420px] lg:h-[min(62vh,760px)]"
+          className="h-[340px] w-full shrink-0 overflow-y-auto overscroll-y-contain [-ms-overflow-style:none] [scrollbar-width:none] sm:h-[420px] lg:h-[min(62vh,760px)] [&::-webkit-scrollbar]:hidden"
         >
           <ul className="flex flex-col">
             <li

@@ -32,12 +32,12 @@ void main() {
   vec2 pixel = floor((uv * uResolution.xy) / grainSize) * grainSize;
 
   // 時間変化をかなり遅くする
-  float timeStep = floor(uTime * 8.0) / 8.0;
+  float timeStep = floor(uTime * 8.0) / 100.0;
 
-  float grain = random(pixel + timeStep * 10.0);
+  float grain = random(pixel + timeStep * 1.0);
 
   // コントラストも弱める
-  grain = (grain - 0.5) * 0.035;
+//   grain = (grain - 0.5) * 0.5;
 
   vec3 base = vec3(0.94);
   vec3 color = base + grain;
