@@ -7,7 +7,8 @@
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",
-    "write": "prettier --write ."
+    "write": "prettier --write .",
+    "check:urls": "node scripts/check-urls.mjs"
   },
   "dependencies": {
     "@fontsource/oxygen-mono": "^5.2.8",
