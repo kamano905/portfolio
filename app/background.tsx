@@ -47,7 +47,7 @@ void main() {
 `;
 
 export default function NoiseBackground() {
-  const mountRef = useRef(null);
+  const mountRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const mount = mountRef.current;
