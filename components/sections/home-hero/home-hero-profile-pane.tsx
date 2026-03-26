@@ -55,13 +55,13 @@ export function HomeHeroProfilePane({
             </Link>
           </Button>
         ) : null}
-        {profile.contact ? (
+        {/* {profile.contact ? (
           <Button size="sm" asChild variant="ghost" className="h-8">
             <Link href={`mailto:${profile.contact}`} aria-label="Send email">
               Contact
             </Link>
           </Button>
-        ) : null}
+        ) : null} */}
       </div>
     </div>
   )
