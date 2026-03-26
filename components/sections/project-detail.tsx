@@ -1,14 +1,10 @@
 import type { Project } from "@/lib/notion/types"
-import { ExternalLink } from "lucide-react"
-import Link from "next/link"
 
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 
 interface ProjectDetailProps {
   project: Project
   labels: {
-    preview: string
     noContent: string
   }
 }
@@ -17,25 +13,12 @@ export function ProjectDetail({ project, labels }: ProjectDetailProps) {
   return (
     <section className="space-y-6">
       <div className="space-y-3">
-        <h1 className="text-foreground text-3xl font-semibold">
-          {project.title}
-        </h1>
+        <h1 className="text-foreground text-3xl">{project.title}</h1>
         {project.time ? (
           <p className="text-muted-foreground text-xs">{project.time}</p>
         ) : null}
         {project.role ? (
           <p className="text-muted-foreground text-sm">{project.role}</p>
-        ) : null}
-      </div>
-
-      <div className="flex flex-wrap items-center gap-2">
-        {project.previewLink ? (
-          <Button asChild size="sm">
-            <Link href={project.previewLink} target="_blank" rel="noreferrer">
-              <ExternalLink />
-              {labels.preview}
-            </Link>
-          </Button>
         ) : null}
       </div>
 

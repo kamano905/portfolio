@@ -31,15 +31,24 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     <div className="relative min-h-screen">
       <Link
         href={`/${locale}/home`}
-        className="fixed top-6 left-6 z-20 text-sm text-black/80 underline-offset-4 hover:underline"
+        className="fixed top-14 left-12 z-20 text-lg text-black/80 underline-offset-4 hover:underline"
       >
         {"<< Back"}
       </Link>
-      <div className="mx-auto max-w-3xl px-6 py-20 sm:px-8">
+      {project.previewLink ? (
+        <Link
+          href={project.previewLink}
+          target="_blank"
+          rel="noreferrer"
+          className="fixed right-12 bottom-14 z-20 text-lg text-black/80 underline-offset-4 hover:underline"
+        >
+          {"Link to the website >>"}
+        </Link>
+      ) : null}
+      <div className="mx-auto max-w-4xl px-8 py-20 pt-36">
         <ProjectDetail
           project={project}
           labels={{
-            preview: dictionary.project.preview,
             noContent: dictionary.project.noContent,
           }}
         />
