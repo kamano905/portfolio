@@ -27,6 +27,8 @@ interface HomeHeroProps {
 }
 
 const MOBILE_PROJECT_RAIL_ITEM_HEIGHT = 88
+const MOBILE_RAIL_SELECTION_OFFSET_PX = 0
+const DESKTOP_RAIL_SELECTION_OFFSET_PX = -80
 
 /**
  * Splits a full name into [firstName, lastName/remaining].
@@ -40,26 +42,33 @@ export function HomeHero({ profile, projects, locale, labels }: HomeHeroProps) {
   const [projectRailItemHeight, setProjectRailItemHeight] = useState(
     PROJECT_RAIL_ITEM_HEIGHT,
   )
+  const [projectRailSelectionOffsetPx, setProjectRailSelectionOffsetPx] =
+    useState(MOBILE_RAIL_SELECTION_OFFSET_PX)
 
   useLayoutEffect(() => {
     const media = window.matchMedia("(min-width: 768px)")
-    const syncItemHeight = () => {
+    const syncRailMetrics = () => {
       setProjectRailItemHeight(
         media.matches
           ? PROJECT_RAIL_ITEM_HEIGHT
           : MOBILE_PROJECT_RAIL_ITEM_HEIGHT,
       )
+      setProjectRailSelectionOffsetPx(
+        media.matches
+          ? DESKTOP_RAIL_SELECTION_OFFSET_PX
+          : MOBILE_RAIL_SELECTION_OFFSET_PX,
+      )
     }
 
-    syncItemHeight()
+    syncRailMetrics()
 
     if (typeof media.addEventListener === "function") {
-      media.addEventListener("change", syncItemHeight)
-      return () => media.removeEventListener("change", syncItemHeight)
+      media.addEventListener("change", syncRailMetrics)
+      return () => media.removeEventListener("change", syncRailMetrics)
     }
 
-    media.addListener(syncItemHeight)
-    return () => media.removeListener(syncItemHeight)
+    media.addListener(syncRailMetrics)
+    return () => media.removeListener(syncRailMetrics)
   }, [])
 
   const {
@@ -73,6 +82,7 @@ export function HomeHero({ profile, projects, locale, labels }: HomeHeroProps) {
   } = useProjectRailController({
     projectCount: projects.length,
     itemHeight: projectRailItemHeight,
+    selectionOffsetPx: projectRailSelectionOffsetPx,
   })
 
   const selectedProject = projects[displayIndex]
@@ -99,7 +109,7 @@ export function HomeHero({ profile, projects, locale, labels }: HomeHeroProps) {
           noProjectSelectedLabel={labels.noProjectSelected}
         />
 
-        <div className="flex flex-col gap-8 md:min-h-[calc(100vh-6rem)] md:justify-between">
+        <div className="flex flex-col gap-8 md:min-h-[calc(100vh-6rem)] md:justify-between md:pt-20">
           <HomeHeroProjectRail
             projects={projects}
             visualProjectIndices={visualProjectIndices}
