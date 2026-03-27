@@ -20,17 +20,19 @@ export function HomeHeroProfilePane({
   labels,
 }: HomeHeroProfilePaneProps) {
   return (
-    <div className="flex flex-col justify-between lg:min-h-[calc(100vh-6rem)]">
+    <div className="flex flex-col gap-8 md:min-h-[calc(100vh-6rem)] md:justify-between">
       <header className="text-black">
-        <p className="text-2xl leading-none tracking-[0.03em]">{firstName}</p>
+        <p className="text-xl leading-none tracking-[0.03em] md:text-2xl">
+          {firstName}
+        </p>
         {lastName ? (
-          <p className="mt-2 text-2xl leading-none tracking-[0.03em]">
+          <p className="mt-2 text-xl leading-none tracking-[0.03em] md:text-2xl">
             {lastName}
           </p>
         ) : null}
       </header>
 
-      <div className="flex items-center gap-2 text-base text-black/85">
+      <div className="flex items-center gap-2 text-sm text-black/85 md:text-base">
         {profile.twitterUrl ? (
           <Button variant="outline" size="icon" asChild>
             <Link

@@ -33,11 +33,11 @@ export default async function AboutPage({ params }: AboutPageProps) {
     <div className="relative min-h-screen">
       <Link
         href={`/${locale}/home`}
-        className="fixed top-14 left-12 z-20 text-lg text-black/80 underline-offset-4 hover:underline"
+        className="fixed top-4 left-4 z-20 text-sm text-black/80 underline-offset-4 hover:underline md:top-14 md:left-12 md:text-lg"
       >
         {"<< Back"}
       </Link>
-      <div className="mx-auto max-w-4xl px-8 py-20 pt-36">
+      <div className="mx-auto max-w-4xl px-4 py-12 pt-20 md:px-8 md:py-20 md:pt-36">
         <div className="space-y-14">
           <AboutProfile profile={profile} />
           <ExperienceSection

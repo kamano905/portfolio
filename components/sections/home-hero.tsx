@@ -5,6 +5,7 @@ import type { Project } from "@/lib/notion/types"
 import type { Profile } from "@/lib/profile"
 import { PROJECT_RAIL_ITEM_HEIGHT } from "@/lib/project-rail-math"
 import Link from "next/link"
+import { useLayoutEffect, useState } from "react"
 import { HomeHeroProfilePane } from "./home-hero/home-hero-profile-pane"
 import { HomeHeroProjectRail } from "./home-hero/home-hero-project-rail"
 import { HomeHeroSelectedProjectCard } from "./home-hero/home-hero-selected-project-card"
@@ -25,6 +26,8 @@ interface HomeHeroProps {
   }
 }
 
+const MOBILE_PROJECT_RAIL_ITEM_HEIGHT = 88
+
 /**
  * Splits a full name into [firstName, lastName/remaining].
  */
@@ -34,6 +37,31 @@ function splitName(name: string): [string, string] {
 }
 
 export function HomeHero({ profile, projects, locale, labels }: HomeHeroProps) {
+  const [projectRailItemHeight, setProjectRailItemHeight] = useState(
+    PROJECT_RAIL_ITEM_HEIGHT,
+  )
+
+  useLayoutEffect(() => {
+    const media = window.matchMedia("(min-width: 768px)")
+    const syncItemHeight = () => {
+      setProjectRailItemHeight(
+        media.matches
+          ? PROJECT_RAIL_ITEM_HEIGHT
+          : MOBILE_PROJECT_RAIL_ITEM_HEIGHT,
+      )
+    }
+
+    syncItemHeight()
+
+    if (typeof media.addEventListener === "function") {
+      media.addEventListener("change", syncItemHeight)
+      return () => media.removeEventListener("change", syncItemHeight)
+    }
+
+    media.addListener(syncItemHeight)
+    return () => media.removeListener(syncItemHeight)
+  }, [])
+
   const {
     displayIndex,
     visualDisplayIndex,
@@ -44,7 +72,7 @@ export function HomeHero({ profile, projects, locale, labels }: HomeHeroProps) {
     viewportRef,
   } = useProjectRailController({
     projectCount: projects.length,
-    itemHeight: PROJECT_RAIL_ITEM_HEIGHT,
+    itemHeight: projectRailItemHeight,
   })
 
   const selectedProject = projects[displayIndex]
@@ -53,7 +81,7 @@ export function HomeHero({ profile, projects, locale, labels }: HomeHeroProps) {
 
   return (
     <section className="min-h-screen overflow-hidden">
-      <div className="relative mx-auto grid min-h-screen max-w-[1800px] gap-14 px-6 py-10 sm:px-10 sm:py-14 lg:grid-cols-[220px_minmax(0,1fr)_280px] lg:gap-10 lg:px-14 lg:py-12">
+      <div className="relative mx-auto flex min-h-screen max-w-[1800px] flex-col gap-10 px-4 py-6 md:grid md:grid-cols-[220px_minmax(0,1fr)_280px] md:gap-10 md:px-10 md:py-12 lg:px-14">
         <HomeHeroProfilePane
           profile={profile}
           firstName={firstName}
@@ -71,19 +99,20 @@ export function HomeHero({ profile, projects, locale, labels }: HomeHeroProps) {
           noProjectSelectedLabel={labels.noProjectSelected}
         />
 
-        <div className="flex flex-col justify-between lg:min-h-[calc(100vh-6rem)]">
+        <div className="flex flex-col gap-8 md:min-h-[calc(100vh-6rem)] md:justify-between">
           <HomeHeroProjectRail
             projects={projects}
             visualProjectIndices={visualProjectIndices}
             visualDisplayIndex={visualDisplayIndex}
             edgePadding={edgePadding}
+            itemHeight={projectRailItemHeight}
             noProjectsLabel={labels.noProjects}
             onScroll={handleScroll}
             setProjectItemRef={setProjectItemRef}
             viewportRef={viewportRef}
           />
 
-          <div className="self-end">
+          <div className="self-start md:self-end">
             <Link
               href={`/${locale}/about`}
               className="text-base text-black/90 underline-offset-4 hover:underline"

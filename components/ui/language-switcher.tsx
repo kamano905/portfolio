@@ -34,7 +34,7 @@ export function LanguageSwitcher({ locale, labels }: LanguageSwitcherProps) {
   const query = searchParams.toString()
 
   return (
-    <div className="fixed top-14 right-12 z-30 flex items-center gap-3 text-xs">
+    <div className="fixed top-4 right-4 z-30 flex items-center gap-2 text-[11px] md:top-14 md:right-12 md:gap-3 md:text-xs">
       {locales.map((targetLocale) => {
         const basePath = buildLocalizedPathname(pathname, targetLocale)
         const href = query ? `${basePath}?${query}` : basePath
@@ -47,7 +47,7 @@ export function LanguageSwitcher({ locale, labels }: LanguageSwitcherProps) {
             key={targetLocale}
             href={href}
             aria-current={active ? "page" : undefined}
-            className={`group relative inline-flex min-w-11 items-center justify-center px-3 py-1.5 tracking-[0.03em] transition-opacity ${
+            className={`group relative inline-flex min-h-8 min-w-10 items-center justify-center px-2.5 py-1.5 tracking-[0.03em] transition-opacity md:min-w-11 md:px-3 ${
               active ? "text-black" : "text-black/55 hover:text-black"
             }`}
           >
