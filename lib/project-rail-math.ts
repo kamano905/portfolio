@@ -23,6 +23,7 @@ interface ProjectIndexFromScrollCenterInput {
   edgePadding: number
   projectCount: number
   itemHeight?: number
+  selectionOffsetPx?: number
 }
 
 export function getProjectIndexFromScrollCenter({
@@ -31,10 +32,11 @@ export function getProjectIndexFromScrollCenter({
   edgePadding,
   projectCount,
   itemHeight = PROJECT_RAIL_ITEM_HEIGHT,
+  selectionOffsetPx = 0,
 }: ProjectIndexFromScrollCenterInput): number {
   if (projectCount <= 0) return 0
 
-  const centerY = scrollTop + viewportHeight / 2
+  const centerY = scrollTop + viewportHeight / 2 + selectionOffsetPx
   const relativeY = centerY - edgePadding - itemHeight / 2
   const rawIndex = Math.round(relativeY / itemHeight)
 
