@@ -3,7 +3,6 @@
 import {
   PROJECT_RAIL_ITEM_HEIGHT,
   clampNumber,
-  getProjectIndexFromScrollCenter,
   getProjectRailEdgePadding,
   wrapIndex,
 } from "@/lib/project-rail-math"
@@ -12,6 +11,7 @@ import { useLayoutEffect, useRef, useState } from "react"
 interface UseProjectRailControllerInput {
   projectCount: number
   itemHeight?: number
+  itemAnchorOffsetPx?: number
   selectionOffsetPx?: number
 }
 
@@ -29,10 +29,14 @@ interface SetProjectItemRefInput {
 export function useProjectRailController({
   projectCount,
   itemHeight = PROJECT_RAIL_ITEM_HEIGHT,
+  itemAnchorOffsetPx = itemHeight / 2,
   selectionOffsetPx = 0,
 }: UseProjectRailControllerInput) {
   const [selectedProjectIndex, setSelectedProjectIndex] = useState(0)
   const [selectedVisualIndex, setSelectedVisualIndex] = useState(() =>
+    projectCount > 1 ? projectCount * 3 : 0,
+  )
+  const [visualCenterProgress, setVisualCenterProgress] = useState(() =>
     projectCount > 1 ? projectCount * 3 : 0,
   )
   const [viewportHeight, setViewportHeight] = useState(0)
@@ -54,7 +58,11 @@ export function useProjectRailController({
   const scrollSyncRafRef = useRef<number | null>(null)
   const railIdentityRef = useRef("")
 
-  const edgePadding = getProjectRailEdgePadding(viewportHeight, itemHeight)
+  const edgePadding = getProjectRailEdgePadding(
+    viewportHeight,
+    itemHeight,
+    itemAnchorOffsetPx,
+  )
   const normalizedProjectIndex =
     projectCount === 0
       ? 0
@@ -90,7 +98,7 @@ export function useProjectRailController({
   useLayoutEffect(() => {
     if (projectCount === 0 || repeatBlockCount === 0) return
 
-    const railIdentity = `${projectCount}:${repeatBlockCount}:${Math.round(edgePadding)}:${Math.round(selectionOffsetPx)}`
+    const railIdentity = `${projectCount}:${repeatBlockCount}:${Math.round(edgePadding)}:${Math.round(itemAnchorOffsetPx)}:${Math.round(selectionOffsetPx)}`
     if (railIdentityRef.current === railIdentity) return
     railIdentityRef.current = railIdentity
 
@@ -102,7 +110,7 @@ export function useProjectRailController({
 
     const centerY =
       activeItem.offsetTop +
-      activeItem.clientHeight / 2 -
+      itemAnchorOffsetPx -
       (viewport.clientHeight / 2 + selectionOffsetPx)
     viewport.scrollTop = centerY
 
@@ -110,6 +118,7 @@ export function useProjectRailController({
     frameId = window.requestAnimationFrame(() => {
       setSelectedProjectIndex(normalizedProjectIndex)
       setSelectedVisualIndex(initialVisualIndex)
+      setVisualCenterProgress(initialVisualIndex)
     })
 
     return () => {
@@ -121,6 +130,7 @@ export function useProjectRailController({
     normalizedProjectIndex,
     projectCount,
     repeatBlockCount,
+    itemAnchorOffsetPx,
     selectionOffsetPx,
   ])
 
@@ -141,16 +151,52 @@ export function useProjectRailController({
     const viewport = viewportRef.current
     if (!viewport) return
 
-    const nextVisualIndex = getProjectIndexFromScrollCenter({
-      scrollTop: viewport.scrollTop,
-      viewportHeight: viewport.clientHeight,
-      edgePadding,
-      projectCount: visualProjectCount,
-      itemHeight,
-      selectionOffsetPx,
-    })
+    const viewportRect = viewport.getBoundingClientRect()
+    const guideOffsetInViewport = viewport.clientHeight / 2 + selectionOffsetPx
+    const guideY = viewportRect.top + guideOffsetInViewport
+
+    let overlappingVisualIndex = -1
+    let overlappingRect: DOMRect | null = null
+    let nearestVisualIndex = 0
+    let nearestRect: DOMRect | null = null
+    let nearestDistance = Number.POSITIVE_INFINITY
+
+    for (let visualIndex = 0; visualIndex < visualProjectCount; visualIndex += 1) {
+      const rowNode = projectItemRefs.current[visualIndex]
+      if (!rowNode) continue
+
+      const rowRect = rowNode.getBoundingClientRect()
+      const overlapsGuide = guideY >= rowRect.top && guideY < rowRect.bottom
+      if (overlapsGuide) {
+        overlappingVisualIndex = visualIndex
+        overlappingRect = rowRect
+        break
+      }
+
+      const rowCenterY = rowRect.top + rowRect.height / 2
+      const distanceToGuide = Math.abs(rowCenterY - guideY)
+      if (distanceToGuide < nearestDistance) {
+        nearestDistance = distanceToGuide
+        nearestVisualIndex = visualIndex
+        nearestRect = rowRect
+      }
+    }
+
+    const nextVisualIndex =
+      overlappingVisualIndex >= 0 ? overlappingVisualIndex : nearestVisualIndex
+    const activeRect = overlappingRect ?? nearestRect
+    const nextVisualProgress =
+      activeRect && activeRect.height > 0
+        ? nextVisualIndex +
+          clampNumber(
+            (guideY - activeRect.top) / activeRect.height,
+            0,
+            1,
+          )
+        : nextVisualIndex
     const nextLogicalIndex = wrapIndex(nextVisualIndex, projectCount)
 
+    setVisualCenterProgress(nextVisualProgress)
     setSelectedVisualIndex(nextVisualIndex)
     setSelectedProjectIndex(nextLogicalIndex)
 
@@ -165,6 +211,7 @@ export function useProjectRailController({
     const deltaRows = rebasedVisualIndex - nextVisualIndex
     viewport.scrollTop += deltaRows * itemHeight
     setSelectedVisualIndex(rebasedVisualIndex)
+    setVisualCenterProgress(nextVisualProgress + deltaRows)
   }
 
   const handleScroll = () => {
@@ -178,6 +225,7 @@ export function useProjectRailController({
   return {
     displayIndex: normalizedProjectIndex,
     visualDisplayIndex: normalizedVisualIndex,
+    visualCenterProgress,
     visualProjectIndices,
     edgePadding,
     handleScroll,

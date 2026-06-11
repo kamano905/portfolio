@@ -5,7 +5,7 @@ import type { Project } from "@/lib/notion/types"
 import type { Profile } from "@/lib/profile"
 import { PROJECT_RAIL_ITEM_HEIGHT } from "@/lib/project-rail-math"
 import Link from "next/link"
-import { useLayoutEffect, useState } from "react"
+import { useLayoutEffect, useRef, useState } from "react"
 import { HomeHeroProfilePane } from "./home-hero/home-hero-profile-pane"
 import { HomeHeroProjectRail } from "./home-hero/home-hero-project-rail"
 import { HomeHeroSelectedProjectCard } from "./home-hero/home-hero-selected-project-card"
@@ -26,9 +26,10 @@ interface HomeHeroProps {
   }
 }
 
-const MOBILE_PROJECT_RAIL_ITEM_HEIGHT = 88
+const MOBILE_PROJECT_RAIL_ITEM_HEIGHT = 80
 const MOBILE_RAIL_SELECTION_OFFSET_PX = 0
-const DESKTOP_RAIL_SELECTION_OFFSET_PX = -80
+const DESKTOP_RAIL_SELECTION_OFFSET_PX = 0
+const DESKTOP_RAIL_ITEM_ANCHOR_OFFSET_PX = 0
 
 /**
  * Splits a full name into [firstName, lastName/remaining].
@@ -44,6 +45,9 @@ export function HomeHero({ profile, projects, locale, labels }: HomeHeroProps) {
   )
   const [projectRailSelectionOffsetPx, setProjectRailSelectionOffsetPx] =
     useState(MOBILE_RAIL_SELECTION_OFFSET_PX)
+  const [projectRailItemAnchorOffsetPx, setProjectRailItemAnchorOffsetPx] =
+    useState(MOBILE_PROJECT_RAIL_ITEM_HEIGHT / 2)
+  const selectionGuideRef = useRef<HTMLDivElement | null>(null)
 
   useLayoutEffect(() => {
     const media = window.matchMedia("(min-width: 768px)")
@@ -52,6 +56,11 @@ export function HomeHero({ profile, projects, locale, labels }: HomeHeroProps) {
         media.matches
           ? PROJECT_RAIL_ITEM_HEIGHT
           : MOBILE_PROJECT_RAIL_ITEM_HEIGHT,
+      )
+      setProjectRailItemAnchorOffsetPx(
+        media.matches
+          ? DESKTOP_RAIL_ITEM_ANCHOR_OFFSET_PX
+          : MOBILE_PROJECT_RAIL_ITEM_HEIGHT / 2,
       )
       setProjectRailSelectionOffsetPx(
         media.matches
@@ -74,6 +83,7 @@ export function HomeHero({ profile, projects, locale, labels }: HomeHeroProps) {
   const {
     displayIndex,
     visualDisplayIndex,
+    visualCenterProgress,
     visualProjectIndices,
     edgePadding,
     handleScroll,
@@ -82,12 +92,71 @@ export function HomeHero({ profile, projects, locale, labels }: HomeHeroProps) {
   } = useProjectRailController({
     projectCount: projects.length,
     itemHeight: projectRailItemHeight,
+    itemAnchorOffsetPx: projectRailItemAnchorOffsetPx,
     selectionOffsetPx: projectRailSelectionOffsetPx,
   })
 
   const selectedProject = projects[displayIndex]
   const [firstName, lastName] = splitName(profile.name || labels.fallbackName)
   const role = selectedProject?.role || labels.fallbackRole
+
+  useLayoutEffect(() => {
+    const media = window.matchMedia("(min-width: 768px)")
+    if (!media.matches) {
+      return
+    }
+
+    const syncGuideOffset = () => {
+      const viewport = viewportRef.current
+      const guide = selectionGuideRef.current
+      if (!viewport || !guide) return
+
+      const viewportRect = viewport.getBoundingClientRect()
+      const guideRect = guide.getBoundingClientRect()
+      const nextOffset = Math.round(
+        guideRect.top +
+          guideRect.height / 2 -
+          (viewportRect.top + viewportRect.height / 2),
+      )
+
+      setProjectRailSelectionOffsetPx((currentOffset) =>
+        currentOffset === nextOffset ? currentOffset : nextOffset,
+      )
+    }
+
+    syncGuideOffset()
+    window.addEventListener("resize", syncGuideOffset)
+
+    const viewport = viewportRef.current
+    const guide = selectionGuideRef.current
+    const canObserve = typeof ResizeObserver !== "undefined"
+
+    if (!viewport || !guide || !canObserve) {
+      return () => {
+        window.removeEventListener("resize", syncGuideOffset)
+      }
+    }
+
+    const observer = new ResizeObserver(syncGuideOffset)
+    observer.observe(viewport)
+    observer.observe(guide)
+
+    let cancelled = false
+    const fontsReady = document.fonts?.ready
+    if (fontsReady) {
+      void fontsReady.then(() => {
+        if (!cancelled) {
+          syncGuideOffset()
+        }
+      })
+    }
+
+    return () => {
+      cancelled = true
+      observer.disconnect()
+      window.removeEventListener("resize", syncGuideOffset)
+    }
+  }, [projectRailItemHeight, selectedProject?.id, viewportRef])
 
   return (
     <section className="min-h-screen overflow-hidden">
@@ -107,6 +176,7 @@ export function HomeHero({ profile, projects, locale, labels }: HomeHeroProps) {
           selectedProject={selectedProject}
           role={role}
           noProjectSelectedLabel={labels.noProjectSelected}
+          selectionGuideRef={selectionGuideRef}
         />
 
         <div className="flex flex-col gap-8 md:min-h-[calc(100vh-6rem)] md:justify-between md:pt-20">
@@ -114,6 +184,7 @@ export function HomeHero({ profile, projects, locale, labels }: HomeHeroProps) {
             projects={projects}
             visualProjectIndices={visualProjectIndices}
             visualDisplayIndex={visualDisplayIndex}
+            visualCenterProgress={visualCenterProgress}
             edgePadding={edgePadding}
             itemHeight={projectRailItemHeight}
             noProjectsLabel={labels.noProjects}

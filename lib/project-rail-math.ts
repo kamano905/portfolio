@@ -1,4 +1,4 @@
-export const PROJECT_RAIL_ITEM_HEIGHT = 140
+export const PROJECT_RAIL_ITEM_HEIGHT = 120
 
 export function clampNumber(value: number, min: number, max: number): number {
   if (max < min) return min
@@ -13,8 +13,9 @@ export function wrapIndex(value: number, size: number): number {
 export function getProjectRailEdgePadding(
   viewportHeight: number,
   itemHeight = PROJECT_RAIL_ITEM_HEIGHT,
+  itemAnchorOffsetPx = itemHeight / 2,
 ): number {
-  return Math.max(0, (viewportHeight - itemHeight) / 2)
+  return Math.max(0, viewportHeight / 2 - itemAnchorOffsetPx)
 }
 
 interface ProjectIndexFromScrollCenterInput {
@@ -23,7 +24,30 @@ interface ProjectIndexFromScrollCenterInput {
   edgePadding: number
   projectCount: number
   itemHeight?: number
+  itemAnchorOffsetPx?: number
   selectionOffsetPx?: number
+}
+
+interface ProjectProgressFromScrollCenterInput {
+  scrollTop: number
+  viewportHeight: number
+  edgePadding: number
+  itemHeight?: number
+  itemAnchorOffsetPx?: number
+  selectionOffsetPx?: number
+}
+
+export function getProjectProgressFromScrollCenter({
+  scrollTop,
+  viewportHeight,
+  edgePadding,
+  itemHeight = PROJECT_RAIL_ITEM_HEIGHT,
+  itemAnchorOffsetPx = itemHeight / 2,
+  selectionOffsetPx = 0,
+}: ProjectProgressFromScrollCenterInput): number {
+  const centerY = scrollTop + viewportHeight / 2 + selectionOffsetPx
+  const relativeY = centerY - edgePadding - itemAnchorOffsetPx
+  return relativeY / itemHeight
 }
 
 export function getProjectIndexFromScrollCenter({
@@ -32,13 +56,21 @@ export function getProjectIndexFromScrollCenter({
   edgePadding,
   projectCount,
   itemHeight = PROJECT_RAIL_ITEM_HEIGHT,
+  itemAnchorOffsetPx = itemHeight / 2,
   selectionOffsetPx = 0,
 }: ProjectIndexFromScrollCenterInput): number {
   if (projectCount <= 0) return 0
 
-  const centerY = scrollTop + viewportHeight / 2 + selectionOffsetPx
-  const relativeY = centerY - edgePadding - itemHeight / 2
-  const rawIndex = Math.round(relativeY / itemHeight)
+  const rawIndex = Math.round(
+    getProjectProgressFromScrollCenter({
+      scrollTop,
+      viewportHeight,
+      edgePadding,
+      itemHeight,
+      itemAnchorOffsetPx,
+      selectionOffsetPx,
+    }),
+  )
 
   return clampNumber(rawIndex, 0, projectCount - 1)
 }

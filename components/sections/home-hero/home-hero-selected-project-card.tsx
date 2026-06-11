@@ -1,12 +1,14 @@
 import type { Locale } from "@/lib/i18n/config"
 import type { Project } from "@/lib/notion/types"
 import Link from "next/link"
+import type { RefObject } from "react"
 
 interface HomeHeroSelectedProjectCardProps {
   locale: Locale
   selectedProject: Project | undefined
   role: string
   noProjectSelectedLabel: string
+  selectionGuideRef?: RefObject<HTMLDivElement | null>
 }
 
 export function HomeHeroSelectedProjectCard({
@@ -14,6 +16,7 @@ export function HomeHeroSelectedProjectCard({
   selectedProject,
   role,
   noProjectSelectedLabel,
+  selectionGuideRef,
 }: HomeHeroSelectedProjectCardProps) {
   return (
     <div className="relative flex min-h-[260px] items-start justify-start pt-16 md:min-h-[320px] md:pt-24 lg:min-h-[calc(100vh-6rem)] lg:pt-36">
@@ -33,6 +36,7 @@ export function HomeHeroSelectedProjectCard({
           </h2>
           <div className="relative hidden py-4 md:block">
             <div
+              ref={selectionGuideRef}
               aria-hidden
               className="pointer-events-none absolute top-1/2 left-1/2 w-[200vw] -translate-x-1/2 -translate-y-1/2 border-t border-black/35"
             />
