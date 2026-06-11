@@ -12,6 +12,7 @@ import { useLayoutEffect, useRef, useState } from "react"
 interface UseProjectRailControllerInput {
   projectCount: number
   itemHeight?: number
+  selectionOffsetPx?: number
 }
 
 interface SetProjectItemRefInput {
@@ -28,6 +29,7 @@ interface SetProjectItemRefInput {
 export function useProjectRailController({
   projectCount,
   itemHeight = PROJECT_RAIL_ITEM_HEIGHT,
+  selectionOffsetPx = 0,
 }: UseProjectRailControllerInput) {
   const [selectedProjectIndex, setSelectedProjectIndex] = useState(0)
   const [selectedVisualIndex, setSelectedVisualIndex] = useState(() =>
@@ -88,7 +90,7 @@ export function useProjectRailController({
   useLayoutEffect(() => {
     if (projectCount === 0 || repeatBlockCount === 0) return
 
-    const railIdentity = `${projectCount}:${repeatBlockCount}:${Math.round(edgePadding)}`
+    const railIdentity = `${projectCount}:${repeatBlockCount}:${Math.round(edgePadding)}:${Math.round(selectionOffsetPx)}`
     if (railIdentityRef.current === railIdentity) return
     railIdentityRef.current = railIdentity
 
@@ -101,7 +103,7 @@ export function useProjectRailController({
     const centerY =
       activeItem.offsetTop +
       activeItem.clientHeight / 2 -
-      viewport.clientHeight / 2
+      (viewport.clientHeight / 2 + selectionOffsetPx)
     viewport.scrollTop = centerY
 
     let frameId = 0
@@ -119,6 +121,7 @@ export function useProjectRailController({
     normalizedProjectIndex,
     projectCount,
     repeatBlockCount,
+    selectionOffsetPx,
   ])
 
   useLayoutEffect(() => {
@@ -144,6 +147,7 @@ export function useProjectRailController({
       edgePadding,
       projectCount: visualProjectCount,
       itemHeight,
+      selectionOffsetPx,
     })
     const nextLogicalIndex = wrapIndex(nextVisualIndex, projectCount)
 
