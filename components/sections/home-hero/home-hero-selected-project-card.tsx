@@ -43,6 +43,9 @@ export function HomeHeroSelectedProjectCard({
           <p className="mt-3 max-w-full text-base leading-[1.5] text-black/85 md:mt-4 md:text-xl md:leading-[1.45]">
             {selectedProject.description}
           </p>
+          <p className="mt-3 max-w-full text-base leading-[1.5] text-black/85 md:mt-4 md:text-xl md:leading-[1.45]">
+            {selectedProject.time}
+          </p>
         </Link>
       ) : (
         <p className="text-[clamp(1.2rem,2vw,2rem)] text-black/70">
