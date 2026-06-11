@@ -102,6 +102,15 @@ export function HomeHero({ profile, projects, locale, labels }: HomeHeroProps) {
           }}
         />
 
+        <div className="self-end md:hidden">
+          <Link
+            href={`/${locale}/about`}
+            className="text-base text-black/90 underline-offset-4 hover:underline"
+          >
+            {labels.seekAboutMe}
+          </Link>
+        </div>
+
         <HomeHeroSelectedProjectCard
           locale={locale}
           selectedProject={selectedProject}
@@ -121,8 +130,7 @@ export function HomeHero({ profile, projects, locale, labels }: HomeHeroProps) {
             setProjectItemRef={setProjectItemRef}
             viewportRef={viewportRef}
           />
-
-          <div className="self-start md:self-end">
+          <div className="hidden self-start md:block md:self-end">
             <Link
               href={`/${locale}/about`}
               className="text-base text-black/90 underline-offset-4 hover:underline"
